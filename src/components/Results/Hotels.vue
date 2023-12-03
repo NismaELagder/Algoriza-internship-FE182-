@@ -216,6 +216,7 @@ export default {
       );
       console.log(allHotels.value);
     });
+
     // const showPropFilter = async ($event) => {
     //   allHotels.value = allHotels.value.filter((hotel) =>
     //     hotel.property.name.includes($event.target.value)

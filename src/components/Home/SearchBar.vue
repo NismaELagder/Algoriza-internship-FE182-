@@ -76,17 +76,6 @@
         v-model="userEnteredData.adults"
       />
     </div>
-    <!-- <div>
-      <input
-        type="number"
-        name="adults"
-        placeholder="Adults 1"
-        class="text-[#4f4f4f] placeholder-current border-gray-400 border outline-none rounded-sm w-full"
-        min="1"
-        max="10"
-        v-model="userEnteredData.adults"
-      />
-    </div> -->
 
     <!-- ************************** Rooms ************************** -->
 

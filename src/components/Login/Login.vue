@@ -88,11 +88,7 @@ export default {
           await usersStore.checkUserExistence(
             userEnteredData.value.email
           );
-        // console.log(bookingStore.isSearchClicked);
-        // console.log(
-        //   currentUser.password ===
-        //     userEnteredData.value.password
-        // );
+
         if (
           currentUser.password ===
             userEnteredData.value.password &&
@@ -114,21 +110,6 @@ export default {
         } else {
           signInError.value = "Wrong Password! Try again.";
         }
-
-        // currentUser.password ===
-        //   userEnteredData.valuepassword &&
-        // bookingStore.isSearchClicked === true
-        //   ? (sessionStorage.setItem("loggedIn", "true"),
-        //     router.push({
-        //       name: "results",
-        //       query: route.query,
-        //     }))
-        //   : currentUser.password ===
-        //     userEnteredData.value.password
-        //   ? (sessionStorage.setItem("loggedIn", "true"),
-        //     router.push("/"))
-        //   : (signInError.value =
-        //       "Wrong Password! Try again.");
       } else {
         signInError.value =
           "This email doesn't exist please register first";

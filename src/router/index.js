@@ -12,7 +12,7 @@ import DiscoverView from "../views/DiscoverView.vue";
 import ContactView from "../views/ContactView.vue";
 import ResultsView from "../views/ResultsView.vue";
 import HoteldetailsView from "../views/HoteldetailsView.vue";
-
+import PaymentsView from "../views/PaymentsView.vue";
 const routes = [
   {
     path: "/",
@@ -33,6 +33,11 @@ const routes = [
     path: "/hoteldetails",
     name: "hoteldetails",
     component: HoteldetailsView,
+  },
+  {
+    path: "/payments",
+    name: "payments",
+    component: PaymentsView,
   },
   {
     path: "/activities",

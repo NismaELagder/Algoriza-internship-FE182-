@@ -62,7 +62,6 @@ export const useBookingStore = defineStore("bookingStore", {
       const response = await fetch(url, options);
       const citiesDestinations = (await response.json())
         .data;
-      // console.log(citiesDestinations);
       const cities = await citiesDestinations
         .map((city) => {
           if (city["city_name"] !== "")
@@ -132,7 +131,6 @@ export const useBookingStore = defineStore("bookingStore", {
       try {
         const response = await fetch(url, options);
         const result = (await response.json()).data;
-        // console.log(result);
         this.filteredMinMaxHotels = result.hotels;
         return this.filteredMinMaxHotels;
       } catch (error) {
@@ -149,7 +147,6 @@ export const useBookingStore = defineStore("bookingStore", {
       pageNumber = 1
     ) {
       const url = `https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotels?dest_id=${dest_id}&search_type=CITY&arrival_date=${start_date}&departure_date=${end_date}&adults=${adults}&room_qty=${rooms}&page_number=${pageNumber}&languagecode=en-us`;
-      console.log(url);
       const options = {
         method: "GET",
         headers: {
@@ -186,7 +183,6 @@ export const useBookingStore = defineStore("bookingStore", {
         const hotelDescription = (await result)[0]
           .description;
 
-        console.log(hotelDescription);
         return hotelDescription;
       } catch (error) {
         console.error(error);
@@ -206,7 +202,6 @@ export const useBookingStore = defineStore("bookingStore", {
       try {
         const response = await fetch(url, options);
         const result = (await response.json()).data.rooms;
-        console.log(result);
         return result;
       } catch (error) {
         console.error(error);

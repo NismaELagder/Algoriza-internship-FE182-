@@ -235,7 +235,7 @@
 import Navbar from "@/components/Navbar.vue";
 import CovidWarning from "@/components/Home/CovidWarning.vue";
 import Footer from "@/components/Footer.vue";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useBookingStore } from "@/components/stores/bookingStore";
 import { useRoute } from "vue-router";
 export default {
@@ -266,7 +266,11 @@ export default {
         route.query.checkinDate,
         route.query.checkoutDate
       );
-      console.log(availableRooms.value);
+      const loopedRooms = computed(() => {
+        return availableRooms.value?.map((room) => ({
+          ...room,
+        }));
+      });
     });
     return { hotel, hotelDesc };
   },
