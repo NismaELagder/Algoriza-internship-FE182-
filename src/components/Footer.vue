@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="">
     <h1
       class="font-SFProDisplay text-[28px] text-[#181818] font-semibold text-center"
     >

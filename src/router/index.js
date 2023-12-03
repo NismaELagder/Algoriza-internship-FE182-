@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  useRoute,
+} from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
@@ -6,6 +10,8 @@ import ActivitiesView from "../views/ActivitiesView.vue";
 import AboutView from "../views/AboutView.vue";
 import DiscoverView from "../views/DiscoverView.vue";
 import ContactView from "../views/ContactView.vue";
+import ResultsView from "../views/ResultsView.vue";
+import HoteldetailsView from "../views/HoteldetailsView.vue";
 
 const routes = [
   {
@@ -19,9 +25,14 @@ const routes = [
     component: LoginView,
   },
   {
-    path: "/register",
-    name: "register",
-    component: RegisterView,
+    path: "/results",
+    name: "results",
+    component: ResultsView,
+  },
+  {
+    path: "/hoteldetails",
+    name: "hoteldetails",
+    component: HoteldetailsView,
   },
   {
     path: "/activities",
@@ -43,11 +54,17 @@ const routes = [
     name: "discover",
     component: DiscoverView,
   },
+  {
+    path: "/register",
+    name: "register",
+    component: RegisterView,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+  sensitive: true,
 });
 
 export default router;

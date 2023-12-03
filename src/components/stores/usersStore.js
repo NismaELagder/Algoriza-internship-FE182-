@@ -19,11 +19,12 @@ export const useUsersStore = defineStore("Users", {
       const users = await res.json();
 
       this.data = users;
+      return this.data;
     },
     logIn() {
       sessionStorage.setItem("loggedIn", "true");
       this.isLoggedIn = true;
-      console.log(this.isLoggedIn);
+      return this.isLoggedIn;
     },
 
     addUser(user) {

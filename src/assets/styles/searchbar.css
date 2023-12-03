@@ -1,0 +1,58 @@
+select[name="location"] {
+  background-image: url(../../assets/location1.png);
+  background-position: 5px center;
+  background-size: 15px;
+  background-repeat: no-repeat;
+}
+
+#guests {
+  background-image: url(../../assets/user.png);
+  background-position: 12px center;
+  background-size: 20px;
+  background-repeat: no-repeat;
+}
+
+#rooms {
+  background-image: url(../../assets/Rooms.png);
+  background-position: 12px center;
+  background-size: 17px;
+  background-repeat: no-repeat;
+}
+
+input[type="date"] {
+  padding: 11px 12px 12px;
+  display: flex;
+  flex-direction: row-reverse;
+  border-radius: 5px;
+}
+
+#starting-date[type="text"],
+#ending-date[type="text"] {
+  background: url(../../assets//calendar1.png) no-repeat;
+  background-position: 6px center;
+  background-color: #f2f2f2;
+  padding: 12px 0 12px 1.8rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: #4f4f4f;
+  opacity: 1;
+  display: block;
+  background: url(../../assets//calendar1.png) no-repeat;
+  width: 20px;
+  height: 20px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 11px 0 12px 30px;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  padding: 11px 0 12px 2.5rem;
+}

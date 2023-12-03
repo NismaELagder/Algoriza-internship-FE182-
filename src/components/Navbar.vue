@@ -1,10 +1,20 @@
 <template>
-  <nav class="flex justify-between py-6 px-[100px]">
+  <nav
+    class="flex justify-between py-6 px-[100px] relative z-[10000]"
+    ref="navbar"
+  >
     <div class="flex w-[11.04vw]">
       <img
         src="../../src/assets/Vector.png"
         alt="Plan"
         class="w-6 h-6"
+        v-if="whiteNav"
+      />
+      <img
+        src="../../src/assets/white-plane.png"
+        alt="Plan"
+        class="w-6 h-6"
+        v-else
       />
       <p class="font-SFProDisplay font-medium text-lg">
         my Dream Place
@@ -60,18 +70,28 @@
 <script>
 import { storeToRefs } from "pinia";
 import { useUsersStore } from "./stores/usersStore";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 export default {
   name: "Navbar",
   setup() {
     const store = useUsersStore();
     const { isLoggedIn } = storeToRefs(store);
+    const navbar = ref(null);
+    const whiteNav = ref(false);
+    const router = useRouter();
     onMounted(() => {
       if (sessionStorage.loggedIn === "true") {
         store.logIn();
       }
+      if (
+        router.options.history.location.includes("/results")
+      ) {
+        navbar.value.classList.add("text-white");
+      }
     });
-    return { isLoggedIn };
+
+    return { isLoggedIn, navbar, whiteNav };
   },
 };
 </script>

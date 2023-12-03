@@ -11,7 +11,7 @@
         <input
           type="email"
           class="w-full"
-          v-model="email"
+          v-model="userEnteredData.email"
         />
       </div>
       <div class="password">
@@ -21,7 +21,7 @@
         <input
           type="password"
           class="w-full mb-5"
-          v-model="password"
+          v-model="userEnteredData.password"
         />
         <!-- <span><img src="../../assets/password.png" /></span> -->
       </div>
@@ -46,7 +46,12 @@
             >Register
           </router-link>
         </p>
-        <p>{{ (email, password) }}</p>
+        <p>
+          {{
+            (userEnteredData.email,
+            userEnteredData.password)
+          }}
+        </p>
       </div>
     </form>
   </div>
@@ -55,35 +60,84 @@
 <script>
 import { ref } from "vue";
 import { useUsersStore } from "../stores/usersStore";
+import { useBookingStore } from "../stores/bookingStore";
+import router from "@/router";
+import { useRoute } from "vue-router";
 
 export default {
   name: "Login",
   setup() {
-    const email = ref("");
-    const password = ref("");
+    const userEnteredData = ref({
+      email: "",
+      password: "",
+    });
     const signInError = ref("");
+    const bookingStore = useBookingStore();
+    const route = useRoute();
+
     async function logInHandler() {
       const usersStore = useUsersStore();
-      const users = await usersStore.getUsers();
-      if (usersStore.checkUserExistence(email.value)) {
-        const currentUser = usersStore.checkUserExistence(
-          email.value
-        );
+      /////////////////
+      const dbUsers = await usersStore.getUsers();
+      if (
+        usersStore.checkUserExistence(
+          userEnteredData.value.email
+        )
+      ) {
+        const currentUser =
+          await usersStore.checkUserExistence(
+            userEnteredData.value.email
+          );
+        // console.log(bookingStore.isSearchClicked);
+        // console.log(
+        //   currentUser.password ===
+        //     userEnteredData.value.password
+        // );
+        if (
+          currentUser.password ===
+            userEnteredData.value.password &&
+          bookingStore.isSearchClicked === true
+        ) {
+          sessionStorage.setItem("loggedIn", "true");
+          let searchInputs =
+            await bookingStore.getSearchInputs;
+          router.push({
+            name: "results",
+            query: searchInputs,
+          });
+        } else if (
+          currentUser.password ===
+          userEnteredData.value.password
+        ) {
+          sessionStorage.setItem("loggedIn", "true");
+          router.push("/");
+        } else {
+          signInError.value = "Wrong Password! Try again.";
+        }
 
-        currentUser.password === password.value
-          ? (sessionStorage.setItem("loggedIn", "true"),
-            (window.location.href = "/"))
-          : (signInError.value =
-              "Wrong Password! Try again.");
+        // currentUser.password ===
+        //   userEnteredData.valuepassword &&
+        // bookingStore.isSearchClicked === true
+        //   ? (sessionStorage.setItem("loggedIn", "true"),
+        //     router.push({
+        //       name: "results",
+        //       query: route.query,
+        //     }))
+        //   : currentUser.password ===
+        //     userEnteredData.value.password
+        //   ? (sessionStorage.setItem("loggedIn", "true"),
+        //     router.push("/"))
+        //   : (signInError.value =
+        //       "Wrong Password! Try again.");
       } else {
         signInError.value =
           "This email doesn't exist please register first";
         setTimeout(() => {
-          window.location.href = "/register";
+          router.push("/register");
         }, 1000);
       }
     }
-    return { email, password, logInHandler, signInError };
+    return { userEnteredData, logInHandler, signInError };
   },
 };
 </script>

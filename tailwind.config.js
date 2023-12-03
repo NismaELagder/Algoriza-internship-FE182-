@@ -10,6 +10,7 @@ export default {
       fontFamily: {
         SFProDisplay: "SF Pro Display",
         WorkSans: "Work Sans",
+        Inter: "Inter",
       },
       colors: {
         dark: "#1B1F2D",

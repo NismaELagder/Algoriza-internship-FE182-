@@ -1,24 +1,28 @@
 <template>
   <div
-    @click="menu = false"
-    class="flex justify-between w-10/12 absolute left-[8.335%] px-4 -top-6 h-16"
+    class="flex justify-between w-10/12 absolute left-[8.335%] px-4 h-16 bg-white py-3 rounded-md"
+    :class="{
+      '-bottom-10': resultPage,
+      '-top-6': !resultPage,
+    }"
   >
+    {{ resultPage }}
     <!-- Search bar for location and date -->
     <select
       name="location"
       class="ps-6 w-1/5 font-WorkSans text-[#4f4f4f] rounded-md bg-[#f4f4f4] h-[43px] text-[13px] appearance-none"
-      v-model="selectedCity"
+      v-model="userEnteredData.city"
     >
       <option selected disabled>
         Where are you going?
       </option>
-      <template v-if="cities">
+      <template v-if="citiesOptions.length">
         <option
-          v-for="city in cities"
-          :key="city"
-          :value="city"
+          v-for="city in citiesOptions"
+          :key="city['id']"
+          :value="city['city_Name']"
         >
-          {{ city }}
+          {{ city.city_Name }}
         </option></template
       >
     </select>
@@ -31,11 +35,13 @@
         name="starting-date"
         id="starting-date"
         class="block focus:border-[rgba(231, 223, 223,.3)] outline-none font-WorkSans h-[43px] rounded-[5px] text-[#4f4f4f] bg-[#f4f4f4] placeholder-current text-[12px]"
-        :min="minDate"
+        :min="minDateAllowed"
         @focus="$event.target.type = 'date'"
         placeholder="Check in date"
-        v-model="checkinDate"
+        v-model="userEnteredData.checkinDate"
       />
+      <!-- @blur="checkOutInput.min = minCheckoutDate" -->
+      <!-- {{ checkinDate }} -->
     </div>
 
     <!-- ************************** End_Date ************************** -->
@@ -46,56 +52,41 @@
         name="ending-date"
         id="ending-date"
         class="block focus:border-[rgba(231, 223, 223,.3)] outline-none font-WorkSans h-[43px] rounded-[5px] text-[#4f4f4f] bg-[#f2f2f2] placeholder-current text-[12px]"
-        :min="minDate"
         @focus="$event.target.type = 'date'"
         placeholder="Check out date"
-        v-model="checkoutDate"
+        v-model="userEnteredData.checkoutDate"
+        ref="checkOutInput"
+        :min="minCheckoutDateAllowed"
       />
+      {{ minCheckoutDateAllowed }}
     </div>
 
     <!-- ************************** Guests ************************** -->
     <div class="w-[14%]">
       <input
         type="text"
-        readonly
-        name="guests"
+        name="adults"
         id="guests"
         placeholder="Guests"
-        class="text-[#4f4f4f] ps-9 bg-[#f4f4f4] rounded-[5px] text-[13px] font-WorkSans w-full placeholder-current h-[43px] focus:placeholder:text-[8px]"
-        @focus="
-          ($event.target.placeholder =
-            'Adults 0 , Children 0'),
-            (menu = true)
-        "
-        @click.stop="menu = true"
+        min="1"
+        max="10"
+        class="text-[#4f4f4f] ps-9 bg-[#f4f4f4] rounded-[5px] text-[13px] font-WorkSans w-full placeholder-current h-[43px] focus:placeholder:text-[8px] outline-none"
+        @focus="$event.target.placeholder = 'Adults 0'"
         @blur="$event.target.placeholder = 'Guests'"
+        v-model="userEnteredData.adults"
       />
-      <div
-        v-if="menu"
-        @click.stop
-        @mouseleave="menu = false"
-        class="mt-[2px] rounded-sm w-full"
-      >
-        <input
-          type="number"
-          name="adults"
-          placeholder="Adults 1"
-          class="text-[#4f4f4f] placeholder-current border-gray-400 border outline-none rounded-sm w-full"
-          min="1"
-          max="10"
-          v-model="adults"
-        />
-        <input
-          type="number"
-          name="children"
-          placeholder="Children 0"
-          min="0"
-          max="10"
-          v-model="children"
-          class="text-[#4f4f4f] placeholder-current border-gray-400 border outline-none rounded-sm w-full"
-        />
-      </div>
     </div>
+    <!-- <div>
+      <input
+        type="number"
+        name="adults"
+        placeholder="Adults 1"
+        class="text-[#4f4f4f] placeholder-current border-gray-400 border outline-none rounded-sm w-full"
+        min="1"
+        max="10"
+        v-model="userEnteredData.adults"
+      />
+    </div> -->
 
     <!-- ************************** Rooms ************************** -->
 
@@ -107,7 +98,7 @@
         min="1"
         max="10"
         placeholder="Rooms"
-        v-model="selectedRooms"
+        v-model="userEnteredData.rooms"
         class="text-[#4f4f4f] bg-[#f4f4f4] rounded-[5px] text-[13px] font-WorkSans w-full placeholder-current focus:placeholder:text-[8px]"
       />
     </div>
@@ -118,141 +109,113 @@
       >
         Search
       </button>
-      <!-- :to="{ name: 'login', path: '/login' }" -->
     </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import flightsLocations, {
-  hotelsSearch,
-} from "../Composable/Flights";
+import { ref, onMounted, computed, watch } from "vue";
+import { useBookingStore } from "../stores/bookingStore.js";
+import router from "@/router/index.js";
+import "../../assets/styles/searchbar.css";
+import { useRouter } from "vue-router";
 export default {
   name: "SearchBar",
   setup() {
-    const checkinDate = ref("");
-    const checkoutDate = ref("");
-    const selectedCity = ref("Where are you going?");
-    const selectedRooms = ref("");
-    const children = ref("");
-    const adults = ref("");
-    const cities = ref([]);
-    const minDate = new Date().toISOString().split("T")[0];
-    const menu = ref(false);
-    const checkLogin = ref(false);
-    onMounted(async () => {
-      cities.value.push(
-        ...(await flightsLocations("egypt"))
-      );
-      // cities.value.push(
-      //   ...(await flightsLocations("Italy"))
-      // );
-      // cities.value.push(
-      //   ...(await flightsLocations("Netherlands"))
-      // );
-
-      checkLogin.value = sessionStorage.loggedIn;
+    const userEnteredData = ref({
+      checkinDate: "",
+      checkoutDate: "",
+      city: "Where are you going?",
+      rooms: "",
+      adults: 0,
+      dest_id: "",
     });
-    function searchHandler() {
+
+    const citiesOptions = ref([]);
+    const minDateAllowed = new Date()
+      .toISOString()
+      .split("T")[0];
+    const minCheckoutDateAllowed = computed(() => {
+      const date = new Date(
+        userEnteredData.value.checkinDate
+      );
+      date.setDate(date.getDate() + 1);
+      return `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()}`;
+    });
+    // const menuShown = ref(false);
+    const checkLogin = ref(false);
+    const bookingStore = useBookingStore();
+    const resultPage = ref(false);
+
+    onMounted(async () => {
+      const router = useRouter();
+      // console.log(router);
+
+      const searchCachedData =
+        await bookingStore.getSearchInputs;
+      /* ----- API ----------- */
+      await bookingStore.getCitiesIds("egypt");
+      /* ------API End ------ */
+      citiesOptions.value.push(...bookingStore.citiesIds);
+      checkLogin.value = sessionStorage.loggedIn;
+      console.log(router.options.history.location);
+      if (
+        router.options.history.location.includes("/results")
+      ) {
+        resultPage.value = true;
+
+        userEnteredData.value.city = searchCachedData?.city;
+        userEnteredData.value.dest_id =
+          searchCachedData?.dest_id;
+        userEnteredData.value.checkinDate =
+          searchCachedData?.checkinDate;
+        userEnteredData.value.checkoutDate =
+          searchCachedData?.checkoutDate;
+        userEnteredData.value.adults =
+          searchCachedData?.adults;
+        userEnteredData.value.rooms =
+          searchCachedData?.rooms;
+      }
+    });
+
+    async function searchHandler() {
+      userEnteredData.value.dest_id =
+        citiesOptions.value.find((el) => {
+          if (el["city_Name"] == userEnteredData.value.city)
+            return el.id;
+        }).id;
       if (checkLogin.value == "true") {
-        console.log("yeeeeeeeeeees");
-        hotelsSearch(
-          selectedCity.value,
-          checkinDate.value,
-          checkoutDate.value,
-          selectedRooms.value,
-          adults.value
-        );
+        router.push({
+          name: "results",
+          query: { ...userEnteredData.value },
+        });
       } else {
-        window.location.href = "/login";
+        bookingStore.toggleisSearchClicked();
+        bookingStore.setSearchInputs(
+          userEnteredData.value.city,
+          userEnteredData.value.dest_id,
+          userEnteredData.value.checkinDate,
+          userEnteredData.value.checkoutDate,
+          userEnteredData.value.adults,
+          userEnteredData.value.rooms
+        );
+        router.push({
+          name: "login",
+          // query: { ...userEnteredData.value },
+        });
       }
     }
     return {
-      cities,
-      minDate,
-      checkinDate,
-      checkoutDate,
-      selectedCity,
-      selectedRooms,
-      adults,
-      children,
-      menu,
+      citiesOptions,
+      minDateAllowed,
+      userEnteredData,
+      // menuShown,
       searchHandler,
+      minCheckoutDateAllowed,
+      resultPage,
     };
   },
 };
 </script>
-<!-- 
-
-
-
-
-
-For personal purpose
-
-
-
- -->
-
-<style scoped>
-/* Style the location dropdown with a custom background image */
-select[name="location"] {
-  background-image: url(../../assets/location1.png);
-  background-position: 5px center;
-  background-size: 15px;
-  background-repeat: no-repeat;
-}
-
-#guests {
-  background-image: url(../../assets/user.png);
-  background-position: 12px center;
-  background-size: 20px;
-  background-repeat: no-repeat;
-}
-
-#rooms {
-  background-image: url(../../assets/Rooms.png);
-  background-position: 12px center;
-  background-size: 17px;
-  background-repeat: no-repeat;
-}
-
-input[type="date"] {
-  padding: 11px 12px 12px;
-  display: flex;
-  flex-direction: row-reverse;
-  border-radius: 5px;
-}
-
-#starting-date[type="text"],
-#ending-date[type="text"] {
-  background: url(../../assets//calendar1.png) no-repeat;
-  background-position: 6px center;
-  background-color: #f2f2f2;
-  padding: 12px 0 12px 1.8rem;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  color: #4f4f4f;
-  opacity: 1;
-  display: block;
-  background: url(../../assets//calendar1.png) no-repeat;
-  width: 20px;
-  height: 20px;
-}
-
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-  padding: 11px 0 12px 30px;
-}
-
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-  padding: 11px 0 12px 2.5rem;
-}
-</style>
