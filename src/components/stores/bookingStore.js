@@ -55,7 +55,7 @@ export const useBookingStore = defineStore("bookingStore", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "9933a5c2fcmsh69ac71ed4841eefp182ca3jsn1a0eab24321d",
+            "001331947emsh18f7877b47b5692p1e2209jsnec5d21a38634",
           "X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
         },
       };
@@ -89,7 +89,7 @@ export const useBookingStore = defineStore("bookingStore", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "9933a5c2fcmsh69ac71ed4841eefp182ca3jsn1a0eab24321d",
+            "001331947emsh18f7877b47b5692p1e2209jsnec5d21a38634",
           "X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
         },
       };
@@ -124,7 +124,7 @@ export const useBookingStore = defineStore("bookingStore", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "9933a5c2fcmsh69ac71ed4841eefp182ca3jsn1a0eab24321d",
+            "001331947emsh18f7877b47b5692p1e2209jsnec5d21a38634",
           "X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
         },
       };
@@ -151,7 +151,7 @@ export const useBookingStore = defineStore("bookingStore", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "9933a5c2fcmsh69ac71ed4841eefp182ca3jsn1a0eab24321d",
+            "001331947emsh18f7877b47b5692p1e2209jsnec5d21a38634",
           "X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
         },
       };
@@ -172,7 +172,7 @@ export const useBookingStore = defineStore("bookingStore", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "9933a5c2fcmsh69ac71ed4841eefp182ca3jsn1a0eab24321d",
+            "001331947emsh18f7877b47b5692p1e2209jsnec5d21a38634",
           "X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
         },
       };
@@ -194,7 +194,7 @@ export const useBookingStore = defineStore("bookingStore", {
         method: "GET",
         headers: {
           "X-RapidAPI-Key":
-            "9933a5c2fcmsh69ac71ed4841eefp182ca3jsn1a0eab24321d",
+            "001331947emsh18f7877b47b5692p1e2209jsnec5d21a38634",
           "X-RapidAPI-Host": "booking-com15.p.rapidapi.com",
         },
       };
